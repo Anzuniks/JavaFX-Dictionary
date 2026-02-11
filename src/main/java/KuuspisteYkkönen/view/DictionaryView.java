@@ -1,7 +1,7 @@
-package view;
+package KuuspisteYkkönen.view;
 
 
-import controller.DictionaryController;
+import KuuspisteYkkönen.controller.DictionaryController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

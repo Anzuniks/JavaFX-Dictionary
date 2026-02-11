@@ -1,4 +1,4 @@
-package model;
+package KuuspisteYkkönen.model;
 
 import java.util.HashMap;
 

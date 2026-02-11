@@ -1,6 +1,6 @@
-package controller;
+package KuuspisteYkkönen.controller;
 
-import model.Dictionary;
+import KuuspisteYkkönen.model.Dictionary;
 
 public class DictionaryController {
 
