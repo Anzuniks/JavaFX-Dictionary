@@ -1,57 +1,83 @@
 package KuuspisteKakkonen;
 
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+public class ValuuttaGUI extends Application {
 
+    // Käytetään kontrolleria, joka hallinnoi valuuttoja ja laskentaa
+    private final ValuuttaController controller = new ValuuttaController();
 
+    @Override
+    public void start(Stage primaryStage) {
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20)); // Lisätään marginaalit
+        grid.setHgap(10); // Sarakkeiden väli
+        grid.setVgap(10); // Rivien väli
 
-public class ValuuttaGUI {
-    private Laskuri laskuri = new Laskuri();
+        // 1. Ohjeet
+        Label ohjeLabel = new Label("Syötä määrä ja valitse valuutat:");
+        grid.add(ohjeLabel, 0, 0, 2, 1);
 
-    public void luoIkkuna() {
-        JFrame f = new JFrame("VALUUTTAKONVERTTERI");
+        // 2. Syöttökenttä ja Label
+        grid.add(new Label("Määrä:"), 0, 1);
+        TextField maaraField = new TextField();
+        grid.add(maaraField, 1, 1);
 
-        JLabel l1 = new JLabel("Eurot:");
-        l1.setBounds(20, 40, 60, 30);
-        JLabel l2 = new JLabel("Dollarit:");
-        l2.setBounds(20, 80, 60, 30);
+        // 3. Valuuttavalinnat (Labelit suoraan laatikoiden päälle)
+        Label mistaLabel = new Label("Mistä:");
+        ComboBox<Valuutta> mistaBox = new ComboBox<>(); // Tyypiksi Valuutta
+        mistaBox.getItems().addAll(controller.getValuutat());
+        mistaBox.getSelectionModel().selectFirst();
+        grid.add(mistaLabel, 0, 2);
+        grid.add(mistaBox, 0, 3);
 
-        JTextField t1 = new JTextField("0");
-        t1.setBounds(80, 40, 100, 30);
-        JTextField t2 = new JTextField("0");
-        t2.setBounds(80, 80, 100, 30);
+        Label mihinLabel = new Label("Mihin:");
+        ComboBox<Valuutta> mihinBox = new ComboBox<>(); // Tyypiksi Valuutta
+        mihinBox.getItems().addAll(controller.getValuutat());
+        mihinBox.getSelectionModel().select(1);
+        grid.add(mihinLabel, 1, 2);
+        grid.add(mihinBox, 1, 3);
 
-        JButton b1 = new JButton("Euroista dollareiksi");
-        b1.setBounds(200, 40, 160, 30);
-        JButton b2 = new JButton("Dollareista euroiksi");
-        b2.setBounds(200, 80, 160, 30);
+        // 4. Tuloskenttä (vain luku)
+        grid.add(new Label("Tulos:"), 0, 4);
+        TextField tulosField = new TextField();
+        tulosField.setEditable(false);
+        grid.add(tulosField, 1, 4);
 
-        b1.addActionListener(e -> {
-            double d = Double.parseDouble(t1.getText());
-            double tulos = laskuri.euroistaDollareiksi(d);
-            t2.setText(String.valueOf(tulos));
+        // 5. Muunnosnappi
+        Button convertBtn = new Button("Muunna");
+        grid.add(convertBtn, 1, 5);
 
+        // Tapahtumankäsittely
+        convertBtn.setOnAction(e -> {
+            try {
+                double maara = Double.parseDouble(maaraField.getText());
+
+                // KORJATTU: ComboBox palauttaa Valuutta-olion, ei Stringiä
+                Valuutta mista = mistaBox.getValue();
+                Valuutta mihin = mihinBox.getValue();
+
+                if (mista != null && mihin != null) {
+                    double tulos = controller.muunna(maara, mista, mihin);
+                    tulosField.setText(String.format("%.2f", tulos)); // Päivitetään kenttä
+                }
+            } catch (NumberFormatException ex) {
+                tulosField.setText("Virheellinen syöte"); // Virheiden hallinta
+            }
         });
 
-        b2.addActionListener(e -> {
-            double d2 = Double.parseDouble(t2.getText());
-            double tulos = laskuri.dollareistaEuroiksi(d2);
-            t1.setText(String.valueOf(tulos));
-        });
+        Scene scene = new Scene(grid, 400, 350);
 
-        f.add(l1);
-        f.add(l2);
-        f.add(t1);
-        f.add(t2);
-        f.add(b1);
-        f.add(b2);
+        // CSS fontin muutos sans-serifiksi
+        scene.getRoot().setStyle("-fx-font-family: 'sans-serif';");
 
-        f.setLayout(null);
-        f.setSize(400, 200);
-        f.setVisible(true);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        primaryStage.setTitle("Valuuttamuunnin");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
