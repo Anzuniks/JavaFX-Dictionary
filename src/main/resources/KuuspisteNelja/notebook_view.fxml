@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="KuuspisteNelja.notebook.controller.NoteController">
+   <children>
+      <TextField fx:id="titleField" promptText="Otsikko" />
+      <TextArea fx:id="contentArea" prefHeight="200.0" prefWidth="200.0" promptText="Kirjoita muistiinpano tähän..." />
+      <Button mnemonicParsing="false" onAction="#handleAddNote" text="Lisää muistiinpano" />
+      <Button mnemonicParsing="false" onAction="#handleUpdateNote" text="Päivitä" />
+      <Button mnemonicParsing="false" onAction="#handleDeleteNote" text="Poista valittu muistiinpano" />
+      <ListView fx:id="noteListView" prefHeight="200.0" prefWidth="200.0" />
+   </children>
+</VBox>
